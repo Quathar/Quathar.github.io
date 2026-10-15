@@ -3,7 +3,7 @@ autoinstall:
   version: 1
   identity:
     username: quathar
-    password: '$1$d1HhvGQJ$wikzIl3E12mf5MeZEiWeF0'
+    password: '$6$9uCeABh4K5Lq1NS2$dDfHrLxs.8x22E2rkzx1ckJtVl8a7FiZm9NpSNJs1pE2cYMBwTGyHax6Kj23I5zb2SJvUMvcZIgHL5hv/uTC8/'
     hostname: r2d2
   storage:
     layout:
@@ -11,7 +11,7 @@ autoinstall:
   locale: en_US.UTF-8
   timezone: Europe/Madrid
   keyboard:
-    layout: us,es
+    layout: us
   ssh:
     install-server: false
   packages:
