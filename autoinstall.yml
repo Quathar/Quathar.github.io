@@ -1,0 +1,21 @@
+#cloud-config
+autoinstall:
+  version: 1
+  identity:
+    username: quathar
+    password: '$1$d1HhvGQJ$wikzIl3E12mf5MeZEiWeF0'
+    hostname: r2d2
+  storage:
+    layout:
+      name: direct
+  locale: en_US.UTF-8
+  timezone: Europe/Madrid
+  keyboard:
+    layout: us,es
+  ssh:
+    install-server: false
+  packages:
+    - curl
+    - git
+  updates: security
+  shutdown: reboot
