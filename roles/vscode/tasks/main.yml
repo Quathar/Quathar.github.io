@@ -1,0 +1,9 @@
+---
+- name: Install VS Code
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure VS Code global settings
+  ansible.builtin.import_tasks: global.yml
+
+- name: Configure VS Code profiles
+  ansible.builtin.import_tasks: profiles.yml

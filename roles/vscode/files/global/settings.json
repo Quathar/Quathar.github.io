@@ -1,0 +1,38 @@
+{
+  "breadcrumbs.enabled": false,
+
+  "chat.mcp.gallery.enabled": true,
+  "chat.viewSessions.orientation": "stacked",
+
+  "diffEditor.hideUnchangedRegions.enabled": true,
+
+  "editor.fontSize": 16,
+  "editor.tabSize": 2,
+  "editor.fontFamily": "'JetBrains Mono', 'monospace', monospace",
+  "editor.wordWrap": "on",
+  "editor.fontLigatures": false,
+  "editor.cursorBlinking": "expand",
+
+  "errorLens.codeLensEnabled": true,
+
+  "explorer.confirmDelete": false,
+
+  "github.copilot.nextEditSuggestions.enabled": true,
+
+  "terminal.integrated.env.linux": {},
+
+  "workbench.colorTheme": "Dracula Theme",
+  "workbench.iconTheme": "symbols",
+  "workbench.productIconTheme": "fluent-icons",
+  "workbench.secondarySideBar.defaultVisibility": "visible",
+
+  "[dockercompose]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.autoIndent": "advanced",
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  }
+}

@@ -1,0 +1,8 @@
+42crunch.vscode-openapi
+dracula-theme.theme-dracula
+editorconfig.editorconfig
+miguelsolorio.fluent-icons
+miguelsolorio.symbols
+pflannery.vscode-versionlens
+redhat.vscode-yaml
+usernamehw.errorlens

@@ -5,9 +5,6 @@ autoinstall:
     username: quathar
     password: '$6$9uCeABh4K5Lq1NS2$dDfHrLxs.8x22E2rkzx1ckJtVl8a7FiZm9NpSNJs1pE2cYMBwTGyHax6Kj23I5zb2SJvUMvcZIgHL5hv/uTC8/'
     hostname: r2d2
-  storage:
-    layout:
-      name: direct
   locale: en_US.UTF-8
   timezone: Europe/Madrid
   keyboard:
@@ -15,7 +12,14 @@ autoinstall:
   ssh:
     install-server: false
   packages:
+    - ansible
     - curl
     - git
+    - vim
+    - unzip
+    - jq
+    - htop
   updates: security
   shutdown: reboot
+  interactive-sections:
+    - storage

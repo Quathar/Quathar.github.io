@@ -1,0 +1,12 @@
+---
+- name: Install {{ vscode_profile.name }} extensions
+  ansible.builtin.command:
+    argv:
+      - code
+      - --install-extension
+      - '{{ item }}'
+      - --profile
+      - '{{ vscode_profile.name }}'
+  loop: "{{ lookup('file', 'profiles/' ~ vscode_profile.id ~ '/extensions.txt').splitlines() }}"
+  register: vscode_profile_extensions
+  changed_when: "'already installed' not in vscode_profile_extensions.stdout"

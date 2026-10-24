@@ -1,0 +1,6 @@
+dbaeumer.vscode-eslint
+ms-playwright.playwright
+standard.vscode-standard
+vitest.explorer
+vue.volar
+wallabyjs.console-ninja

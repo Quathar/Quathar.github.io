@@ -1,0 +1,102 @@
+---
+- name: Define VS Code profiles
+  ansible.builtin.set_fact:
+    vscode_profiles:
+      - name: Vue
+        id: vue
+      - name: Java
+        id: java
+    vscode_user_dir: '{{ ansible_env.HOME }}/.config/Code/User'
+    vscode_storage_file: '{{ ansible_env.HOME }}/.config/Code/User/globalStorage/storage.json'
+    vscode_global_settings: "{{ lookup('file', 'global/settings.json') | from_json }}"
+    vscode_profiles_added: false
+
+- name: Create VS Code user directories
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    mode: '0755'
+  loop:
+    - '{{ vscode_user_dir }}/globalStorage'
+    - '{{ vscode_user_dir }}/profiles'
+
+- name: Check VS Code storage
+  ansible.builtin.stat:
+    path: '{{ vscode_storage_file }}'
+  register: vscode_storage_stat
+
+- name: Read VS Code storage
+  ansible.builtin.slurp:
+    src: '{{ vscode_storage_file }}'
+  register: vscode_storage_raw
+  when: vscode_storage_stat.stat.exists
+
+- name: Load VS Code storage
+  ansible.builtin.set_fact:
+    vscode_storage: >-
+      {{ (vscode_storage_raw.content | b64decode | from_json)
+         if vscode_storage_stat.stat.exists else {} }}
+
+- name: Register missing VS Code profiles
+  ansible.builtin.set_fact:
+    vscode_storage: >-
+      {{ vscode_storage | combine({
+           'userDataProfiles': (vscode_storage.userDataProfiles | default([]))
+             + [{'name': item.name, 'location': item.id}]
+         }) }}
+    vscode_profiles_added: true
+  loop: '{{ vscode_profiles }}'
+  when: >-
+    item.name not in
+    (vscode_storage.userDataProfiles | default([]) | map(attribute='name') | list)
+
+- name: Save VS Code profile registry
+  ansible.builtin.copy:
+    content: "{{ vscode_storage | to_nice_json(sort_keys=False) }}\n"
+    dest: '{{ vscode_storage_file }}'
+    mode: '0644'
+  when: vscode_profiles_added
+
+- name: Resolve VS Code profile locations
+  ansible.builtin.set_fact:
+    vscode_profile_locations: >-
+      {{ vscode_profile_locations | default({}) | combine({
+           item.name: (vscode_storage.userDataProfiles
+                       | selectattr('name', 'equalto', item.name)
+                       | map(attribute='location')
+                       | first)
+         }) }}
+  loop: '{{ vscode_profiles }}'
+
+- name: Create VS Code profile directories
+  ansible.builtin.file:
+    path: '{{ vscode_user_dir }}/profiles/{{ vscode_profile_locations[item.name] }}'
+    state: directory
+    mode: '0755'
+  loop: '{{ vscode_profiles }}'
+
+- name: Write merged VS Code profile settings
+  ansible.builtin.copy:
+    content: >-
+      {{ (vscode_global_settings
+          | combine(lookup('file', 'profiles/' ~ item.id ~ '/settings.json') | from_json,
+                    recursive=True))
+         | to_nice_json(indent=2, sort_keys=False) }}
+    dest: >-
+      {{ vscode_user_dir }}/profiles/{{ vscode_profile_locations[item.name] }}/settings.json
+    mode: '0644'
+  loop: '{{ vscode_profiles }}'
+
+- name: Copy global VS Code keybindings to profiles
+  ansible.builtin.copy:
+    src: global/keybindings.json
+    dest: >-
+      {{ vscode_user_dir }}/profiles/{{ vscode_profile_locations[item.name] }}/keybindings.json
+    mode: '0644'
+  loop: '{{ vscode_profiles }}'
+
+- name: Install extensions for each profile
+  ansible.builtin.include_tasks: install-profile.yml
+  loop: '{{ vscode_profiles }}'
+  loop_control:
+    loop_var: vscode_profile

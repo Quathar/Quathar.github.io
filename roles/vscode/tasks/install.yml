@@ -1,0 +1,36 @@
+---
+- name: Download Microsoft's signing key
+  become: true
+  ansible.builtin.get_url:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    dest: /etc/apt/keyrings/microsoft.asc
+    mode: '0644'
+
+- name: Dearmor Microsoft's signing key
+  become: true
+  ansible.builtin.command:
+    cmd: >
+      gpg --dearmor --yes
+      --output /etc/apt/keyrings/microsoft.gpg
+      /etc/apt/keyrings/microsoft.asc
+    creates: /etc/apt/keyrings/microsoft.gpg
+
+- name: Add VS Code repository
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/vscode.sources
+    mode: '0644'
+    content: |
+      Types: deb
+      URIs: https://packages.microsoft.com/repos/code
+      Suites: stable
+      Components: main
+      Architectures: amd64,arm64,armhf
+      Signed-By: /etc/apt/keyrings/microsoft.gpg
+
+- name: Install VSCode
+  become: true
+  ansible.builtin.apt:
+    name: code
+    state: present
+    update_cache: true
