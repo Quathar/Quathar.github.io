@@ -1,0 +1,61 @@
+---
+- name: Download Microsoft's signing key
+  become: true
+  ansible.builtin.get_url:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    dest: /etc/apt/keyrings/microsoft.asc
+    mode: '0644'
+
+- name: Dearmor Microsoft's signing key
+  become: true
+  ansible.builtin.command:
+    cmd: >
+      gpg --dearmor --yes
+      --output /etc/apt/keyrings/microsoft.gpg
+      /etc/apt/keyrings/microsoft.asc
+    creates: /etc/apt/keyrings/microsoft.gpg
+
+- name: Add VS Code repository
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/vscode.sources
+    mode: '0644'
+    content: |
+      Types: deb
+      URIs: https://packages.microsoft.com/repos/code
+      Suites: stable
+      Components: main
+      Architectures: amd64,arm64,armhf
+      Signed-By: /etc/apt/keyrings/microsoft.gpg
+
+- name: Install VSCode
+  become: true
+  ansible.builtin.apt:
+    name: code
+    state: present
+    update_cache: true
+
+- name: Create VS Code user configuration directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/Code/User"
+    state: directory
+    mode: '0755'
+
+- name: Copy VS Code settings
+  ansible.builtin.copy:
+    src: settings.json
+    dest: "{{ ansible_env.HOME }}/.config/Code/User/settings.json"
+    mode: '0644'
+
+- name: Copy VS Code keybindings
+  ansible.builtin.copy:
+    src: keybindings.json
+    dest: "{{ ansible_env.HOME }}/.config/Code/User/keybindings.json"
+    mode: '0644'
+
+- name: Install VS Code extensions
+  ansible.builtin.command:
+    cmd: "code --install-extension {{ item }}"
+  loop: "{{ lookup('file', 'extensions.txt').splitlines() }}"
+  register: vscode_extensions
+  changed_when: "'already installed' not in vscode_extensions.stdout"

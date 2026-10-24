@@ -1,0 +1,60 @@
+{
+  "workbench.colorTheme": "Dracula Theme",
+  "workbench.iconTheme": "symbols",
+  "workbench.productIconTheme": "fluent-icons",
+
+  "terminal.integrated.env.linux": {},
+
+  "breadcrumbs.enabled": false,
+  "editor.fontSize": 16,
+  "editor.tabSize": 2,
+  "editor.fontFamily": "'JetBrains Mono', 'monospace', monospace",
+  "editor.wordWrap": "on",
+  "editor.fontLigatures": false,
+  "editor.cursorBlinking": "expand",
+  "editor.defaultFormatter": "standard.vscode-standard",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  // "files.trimTrailingWhitespace": true,
+  // "files.insertFinalNewline": true,
+
+  "eslint.format.enable": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "vue",
+    "typescript",
+    "typescriptreact"
+  ],
+  "errorLens.codeLensEnabled": true,
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[vue]": {
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "standard.autoFixOnSave": true,
+  "console-ninja.featureSet": "Community",
+  "[java]": {},
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "[dockercompose]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.autoIndent": "advanced",
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "explorer.confirmDelete": false,
+  "playwright.reuseBrowser": false,
+  "workbench.secondarySideBar.defaultVisibility": "visible",
+  "diffEditor.hideUnchangedRegions.enabled": true,
+  "chat.mcp.gallery.enabled": true,
+  "chat.viewSessions.orientation": "stacked"
+}

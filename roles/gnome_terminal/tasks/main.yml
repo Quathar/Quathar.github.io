@@ -1,0 +1,23 @@
+---
+- name: Install GNOME Terminal theme dependencies
+  become: true
+  ansible.builtin.apt:
+    name:
+      - dconf-cli
+      - git
+    state: present
+    update_cache: true
+
+- name: Clone Dracula GNOME Terminal theme
+  become: false
+  ansible.builtin.git:
+    repo: https://github.com/dracula/gnome-terminal.git
+    dest: '{{ ansible_env.HOME }}/.local/src/dracula-gnome-terminal'
+    version: master
+    depth: 1
+
+- name: Display Dracula theme setup instructions
+  ansible.builtin.debug:
+    msg:
+      - 'To configure Dracula for GNOME Terminal, run this command in your desktop terminal:'
+      - 'cd {{ ansible_env.HOME }}/.local/src/dracula-gnome-terminal && ./install.sh'

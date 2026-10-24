@@ -1,0 +1,24 @@
+---
+- name: Install my apps after clean OS install
+  hosts: localhost
+  connection: local
+
+  pre_tasks:
+    - name: Refuse to run the playbook as root
+      ansible.builtin.assert:
+        that: ansible_user_id != 'root'
+        fail_msg: >-
+          Run this playbook as your normal user, not with sudo.
+          Use: ansible-playbook setup.yml --ask-become-pass
+
+  roles:
+    - base
+    - zsh
+    - gnome_terminal
+    - git
+    - github_desktop
+    - bitwarden
+    - filen
+    - brave
+    - docker
+    - vscode
