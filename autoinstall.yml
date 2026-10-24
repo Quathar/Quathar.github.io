@@ -15,7 +15,12 @@ autoinstall:
   ssh:
     install-server: false
   packages:
+    - ansible
     - curl
     - git
+    - vim
+    - unzip
+    - jq
+    - htop
   updates: security
   shutdown: reboot

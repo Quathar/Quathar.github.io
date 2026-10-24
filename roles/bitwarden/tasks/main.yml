@@ -1,0 +1,20 @@
+---
+- name: Download Bitwarden desktop package
+  become: true
+  ansible.builtin.get_url:
+    url: '{{ bitwarden.deb_url }}'
+    dest: '{{ bitwarden.deb_path }}'
+    checksum: 'sha256:{{ bitwarden.sha256 }}'
+    mode: '0644'
+
+- name: Install Bitwarden desktop
+  become: true
+  ansible.builtin.apt:
+    deb: '{{ bitwarden.deb_path }}'
+    state: present
+
+- name: Remove downloaded Bitwarden package
+  become: true
+  ansible.builtin.file:
+    path: '{{ bitwarden.deb_path }}'
+    state: absent

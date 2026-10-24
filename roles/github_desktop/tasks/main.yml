@@ -1,0 +1,25 @@
+---
+- name: Download GitHub Desktop signing key
+  become: true
+  ansible.builtin.get_url:
+    url: https://mirror.mwt.me/shiftkey-desktop/gpgkey
+    dest: /etc/apt/keyrings/mwt-desktop.asc
+    mode: '0644'
+
+- name: Dearmor GitHub Desktop signing key
+  become: true
+  ansible.builtin.command:
+    cmd: >
+      gpg --dearmor --yes
+      --output /usr/share/keyrings/mwt-desktop.gpg
+      /etc/apt/keyrings/mwt-desktop.asc
+  args:
+    creates: /usr/share/keyrings/mwt-desktop.gpg
+
+- name: Add GitHub Desktop repository
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/mwt-desktop.list
+    mode: '0644'
+    content: |
+      deb [arch=amd64 signed-by=/usr/share/keyrings/mwt-desktop.gpg] https://mirror.mwt.me/shiftkey-desktop/deb/ any main

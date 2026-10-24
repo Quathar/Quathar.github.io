@@ -1,0 +1,59 @@
+---
+- name: Install Zsh
+  become: true
+  ansible.builtin.apt:
+    name: zsh
+    state: present
+    update_cache: true
+
+- name: Set Zsh as the default shell
+  become: true
+  ansible.builtin.user:
+    name: '{{ ansible_user_id }}'
+    shell: /bin/zsh
+
+- name: Install Oh My Zsh
+  ansible.builtin.shell: |
+    RUNZSH=no CHSH=no KEEP_ZSHRC=yes \
+    sh -c '$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)' '' --unattended
+  args:
+    creates: '{{ ansible_env.HOME }}/.oh-my-zsh/oh-my-zsh.sh'
+
+- name: Copy Zsh aliases
+  ansible.builtin.copy:
+    src: aliases.zsh
+    dest: '{{ ansible_env.HOME }}/.oh-my-zsh/custom/aliases.zsh'
+    mode: '0644'
+
+- name: Create user fonts directory
+  ansible.builtin.file:
+    path: '{{ ansible_env.HOME }}/.local/share/fonts'
+    state: directory
+    mode: '0755'
+
+- name: Install Oh My Posh
+  become: true
+  ansible.builtin.shell: |
+    curl -s https://ohmyposh.dev/install.sh | bash -s -- -d "/usr/local/bin"
+  args:
+    creates: '/usr/local/bin/oh-my-posh'
+
+- name: Create Oh My Posh themes directory
+  ansible.builtin.file:
+    path: '{{ ansible_env.HOME }}/.posh'
+    state: directory
+    mode: '0755'
+
+- name: Copy Oh My Posh theme
+  ansible.builtin.copy:
+    src: huvix.omp.custom.json
+    dest: '{{ ansible_env.HOME }}/.posh/huvix.omp.custom.json'
+    mode: '0644'
+
+- name: Configure Oh My Posh in Zsh
+  ansible.builtin.lineinfile:
+    path: '{{ ansible_env.HOME }}/.zshrc'
+    regexp: '^eval "\$\('
+    line: 'eval "$(oh-my-posh init zsh --config {{ ansible_env.HOME }}/.posh/huvix.omp.custom.json)"'
+    create: true
+    mode: '0644'

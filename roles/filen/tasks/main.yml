@@ -1,0 +1,28 @@
+---
+- name: Install Filen desktop dependencies
+  become: true
+  ansible.builtin.apt:
+    name:
+      - fuse3
+    state: present
+    update_cache: true
+
+- name: Download Filen desktop package
+  become: true
+  ansible.builtin.get_url:
+    url: https://github.com/FilenCloudDienste/filen-desktop/releases/download/v{{ filen.version }}/Filen_linux_amd64.deb
+    dest: '{{ filen.deb_path }}'
+    checksum: 'sha256:{{ filen.sha256 }}'
+    mode: "0644"
+
+- name: Install Filen desktop
+  become: true
+  ansible.builtin.apt:
+    deb: '{{ filen.deb_path }}'
+    state: present
+
+- name: Remove downloaded Filen package
+  become: true
+  ansible.builtin.file:
+    path: '{{ filen.deb_path }}'
+    state: absent

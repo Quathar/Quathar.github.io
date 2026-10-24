@@ -1,0 +1,26 @@
+---
+- name: Install base packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gpg
+      - vim
+      - htop
+    state: present
+    update_cache: true
+
+- name: Install OpenSSL
+  become: true
+  ansible.builtin.apt:
+    name: openssl
+    state: present
+    update_cache: true
+
+- name: Install Java 25 JDK
+  become: true
+  ansible.builtin.apt:
+    name: openjdk-25-jdk
+    state: present
+    update_cache: true
